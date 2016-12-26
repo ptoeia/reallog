@@ -1,4 +1,7 @@
 #coding:utf-8
+import os
+import sys
+import subprocess
 from django.http import HttpResponse
 from channels.handler import AsgiHandler
 
@@ -16,10 +19,16 @@ def ws_connect(message):
 
 #将发来的信息原样返回
 def ws_message(message):
-    
-    message.reply_channel.send({
-        "text": message.content['text'],
-    })
+    #while True: 
+    content = subprocess.Popen("/usr/bin/tailf  /app/reallog/reallog/tomcat.log",stdout=subprocess.PIPE,shell=True)
+    while True:
+        line = content.stdout.readline().strip()
+    #for chunk in AsgiHandler.encode_response(line):
+        if line:
+            message.reply_channel.send({
+                #"text": message.content['text'],
+                "text": line,
+             })
 #断开连接时发送一个disconnect字符串，当然，他已经收不到了
 def ws_disconnect(message):
     pass
