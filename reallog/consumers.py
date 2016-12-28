@@ -2,6 +2,7 @@
 import os
 import sys
 import subprocess
+import json
 from django.http import HttpResponse
 from channels.handler import AsgiHandler
 
@@ -19,17 +20,16 @@ def ws_connect(message):
 
 #将发来的信息原样返回
 def ws_message(message):
-    ip = message.content['text']
+    ip = message.content['text'].strip()
     cmd = "/usr/bin/ssh root@{ip} /bin/bash /app/taillog.sh".format(ip=ip) 
-    #content = subprocess.Popen("/usr/bin/tailf  /app/reallog/reallog/tomcat.log",stdout=subprocess.PIPE,shell=True)
     content = subprocess.Popen(cmd,stdout=subprocess.PIPE,shell=True)
     while True:
         line = content.stdout.readline().strip()
-    #for chunk in AsgiHandler.encode_response(line):
         if line:
-            message.reply_channel.send({
+            for chunk in json.dumps(line):
+                message.reply_channel.send({
                # "text": message.content['text'],
-               "text": line,
+                "text": chunk,
              })
 #断开连接时发送一个disconnect字符串，当然，他已经收不到了
 def ws_disconnect(message):

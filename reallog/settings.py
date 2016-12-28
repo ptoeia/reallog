@@ -107,10 +107,10 @@ CHANNEL_LAYERS = {
     "default": {
       #  "BACKEND": "asgiref.inmemory.ChannelLayer",
         "BACKEND": "asgi_ipc.IPCChannelLayer",
-      # "BACKEND": "asgi_redis.RedisChannelLayer",
-      # "CONFIG": {
-       #     "hosts":[("127.0.0.1",6379)],
-       #    },
+      #  "BACKEND": "asgi_redis.RedisChannelLayer",
+      #  "CONFIG": {
+      #      "hosts":[("127.0.0.1",6379)],
+      #     },
         "ROUTING": "reallog.routing.channel_routing",
     },
 }
